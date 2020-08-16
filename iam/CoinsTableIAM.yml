@@ -1,0 +1,8 @@
+CoinsTableIAM:
+  Effect: Allow
+  Action:
+    - dynamodb:PutItem
+    - dynamodb:GetItem
+    - dynamodb:Scan
+  Resource:
+    - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/CoinsTable
