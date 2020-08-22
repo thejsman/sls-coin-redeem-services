@@ -1,3 +1,4 @@
+import AWS from "aws-sdk";
 import validator from "@middy/validator";
 import commonMiddleware from "../lib/commonMiddleware";
 import coinsRedeemSchema from "../lib/schemas/coinsRedeemSchema";
@@ -5,8 +6,10 @@ import coinsRedeemSchema from "../lib/schemas/coinsRedeemSchema";
 // import createError from "http-errors" // to handle errors from checkInventory endpoints
 import { getUserById } from "./getUser";
 
+const sqs = new AWS.SQS({ region: "ap-south-1" });
+
 async function coinsRedeem(event, context) {
-  const { user_id, item_id, amount = 0 } = event.body;
+  const { user_id } = event.body;
 
   //get user by id to validate user
   const user = await getUserById(user_id);
@@ -16,7 +19,14 @@ async function coinsRedeem(event, context) {
   if (user) {
     // write on SQS fifo queue
 
-    console.log({ user_id, item_id, amount });
+    await sqs
+      .sendMessage({
+        QueueUrl:
+          "https://sqs.ap-south-1.amazonaws.com/375647459438/CoinsRedemptionQueue.fifo",
+        MessageBody: JSON.stringify(event.body),
+        MessageGroupId: "coin-123",
+      })
+      .promise();
   }
 
   const body = event.body;

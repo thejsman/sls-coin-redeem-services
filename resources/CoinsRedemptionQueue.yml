@@ -1,0 +1,6 @@
+CoinsRedemptionQueue:
+  Type: AWS::SQS::Queue
+  Properties:
+    QueueName: CoinsRedemptionQueue.fifo
+    FifoQueue: true
+    ContentBasedDeduplication: true

@@ -17,6 +17,7 @@ resources:
   Resources:
     UsersTable: ${file(resources/UsersTable.yml):UsersTable}
     BufferCoinsTable: ${file(resources/BufferCoinsTable.yml):BufferCoinsTable}
+    CoinsRedemptionQueue: ${file(resources/CoinsRedemptionQueue.yml):CoinsRedemptionQueue}
 functions:
   createUser:
     handler: src/handlers/createUser.handler
@@ -50,5 +51,15 @@ functions:
           path: /coinsredeem
   processBufferItems:
     handler: src/handlers/processBufferItems.handler
-    # events:
-    #   - schedule: rate(5 minutes)
+    events:
+      - schedule: rate(5 minutes)
+  processRedemptionQueue:
+    handler: src/handlers/processRedemptionQueue.handler
+    events:
+      - sqs:
+          arn: ${self:custom.coinsRedemptionQueue.arn}
+          batchSize: 10
+          maximumRetryAttempts: 10
+custom:
+  coinsRedemptionQueue:
+    arn: !GetAtt CoinsRedemptionQueue.Arn

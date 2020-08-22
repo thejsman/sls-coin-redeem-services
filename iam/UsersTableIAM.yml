@@ -5,7 +5,10 @@ UsersTableIAM:
     - dynamodb:GetItem
     - dynamodb:Scan
     - dynamodb:UpdateItem
+    - sqs:ReceiveMessage
+    - sqs:SendMessage
 
   Resource:
     - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/UsersTable
     - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/BufferCoinsTable
+    - ${self:custom.coinsRedemptionQueue.arn}
