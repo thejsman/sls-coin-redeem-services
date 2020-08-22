@@ -8,7 +8,7 @@ async function getUsers(event, context) {
   let users;
 
   try {
-    const result = await dynamodb.scan({ TableName: "CoinsTable" }).promise();
+    const result = await dynamodb.scan({ TableName: "UsersTable" }).promise();
     users = result.Items;
   } catch (error) {
     console.log(error);

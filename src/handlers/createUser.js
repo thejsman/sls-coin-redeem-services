@@ -16,7 +16,7 @@ async function createUser(event, context) {
   try {
     await dynamodb
       .put({
-        TableName: "CoinsTable",
+        TableName: "UsersTable",
         Item: user,
       })
       .promise();

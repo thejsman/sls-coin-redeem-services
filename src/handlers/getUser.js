@@ -4,13 +4,12 @@ import createError from "http-errors";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-async function getUser(event, context) {
+export const getUserById = async (user_id) => {
   let user;
-  const { user_id } = event.pathParameters;
   try {
     const result = await dynamodb
       .get({
-        TableName: "CoinsTable",
+        TableName: "UsersTable",
         Key: { user_id },
       })
       .promise();
@@ -24,6 +23,12 @@ async function getUser(event, context) {
   if (!user) {
     throw new createError.NotFound(`User not found with ${user_id} id`);
   }
+  return user;
+};
+
+async function getUser(event, context) {
+  const { user_id } = event.pathParameters;
+  const user = await getUserById(user_id);
   return {
     statusCode: 200,
     body: JSON.stringify(user),

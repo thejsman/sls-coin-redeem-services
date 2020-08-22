@@ -12,10 +12,11 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: "ap-south-1"
   iamRoleStatements:
-    - ${file(iam/CoinsTableIAM.yml):CoinsTableIAM}
+    - ${file(iam/UsersTableIAM.yml):UsersTableIAM}
 resources:
   Resources:
-    CoinsTable: ${file(resources/CoinsTable.yml):CoinsTable}
+    UsersTable: ${file(resources/UsersTable.yml):UsersTable}
+    BufferCoinsTable: ${file(resources/BufferCoinsTable.yml):BufferCoinsTable}
 functions:
   createUser:
     handler: src/handlers/createUser.handler
@@ -35,3 +36,9 @@ functions:
       - http:
           method: GET
           path: /user/{user_id}
+  coinsRedeem:
+    handler: src/handlers/coinsRedeem.handler
+    events:
+      - http:
+          method: POST
+          path: /coinsredeem

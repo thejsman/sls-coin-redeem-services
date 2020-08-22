@@ -1,7 +1,7 @@
-CoinsTable:
+BufferCoinsTable:
   Type: AWS::DynamoDB::Table
   Properties:
-    TableName: CoinsTable
+    TableName: BufferCoinsTable
     BillingMode: PAY_PER_REQUEST
     AttributeDefinitions:
       - AttributeName: user_id
