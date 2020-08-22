@@ -1,6 +1,8 @@
 import AWS from "aws-sdk";
+import validator from "@middy/validator";
 import commonMiddleware from "../lib/commonMiddleware";
 import createError from "http-errors";
+import createUserSchema from "../lib/schemas/createUserSchema";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
@@ -30,4 +32,6 @@ async function createUser(event, context) {
   };
 }
 
-export const handler = commonMiddleware(createUser);
+export const handler = commonMiddleware(createUser).use(
+  validator({ inputSchema: createUserSchema })
+);
