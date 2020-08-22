@@ -36,8 +36,8 @@ functions:
       - http:
           method: GET
           path: /user/{user_id}
-  deductCoins:
-    handler: src/handlers/deductCoins.handler
+  UpdateCoins:
+    handler: src/handlers/UpdateCoins.handler
     events:
       - http:
           method: PATCH
