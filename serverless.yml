@@ -48,3 +48,7 @@ functions:
       - http:
           method: POST
           path: /coinsredeem
+  processBufferItems:
+    handler: src/handlers/processBufferItems.handler
+    # events:
+    #   - schedule: rate(5 minutes)
