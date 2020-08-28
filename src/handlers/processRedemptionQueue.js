@@ -89,11 +89,11 @@ async function processRedemptionQueue(event, context) {
     const message = {
       Body: {
         Text: {
-          Data: `Hello Admin, UserId: ${user_id} does not have enough coins for the item id - ${item_id}. Please initiate a refund for the same.`,
+          Data: `Hello Admin, Item Id: ${item_id} is no longer available please, initiate refund for UserId: ${user_id} Coins deducted :${item_info.coins_required}.`,
         },
       },
       Subject: {
-        Data: `Initiate Refund UserId: ${user_id}, ItemId: ${item_id}`,
+        Data: `Initiate Refund UserId: ${user_id}, ItemId: ${item_id}, Coins: ${item_info.coins_required}`,
       },
     };
     await sendEmailToAdmin(message);
