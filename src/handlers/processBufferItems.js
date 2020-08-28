@@ -1,5 +1,3 @@
-async function processBufferItems(event, context) {
-  console.log("processing buffer items...");
-}
+async function processBufferItems(event, context) {}
 
 export const handler = processBufferItems;

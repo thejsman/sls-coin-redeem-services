@@ -13,10 +13,12 @@ provider:
   region: "ap-south-1"
   iamRoleStatements:
     - ${file(iam/UsersTableIAM.yml):UsersTableIAM}
+    - ${file(iam/SendMailIAM.yml):SendMailIAM}
 resources:
   Resources:
-    UsersTable: ${file(resources/UsersTable.yml):UsersTable}
     BufferCoinsTable: ${file(resources/BufferCoinsTable.yml):BufferCoinsTable}
+    UsersTable: ${file(resources/UsersTable.yml):UsersTable}
+    CoinsTable: ${file(resources/CoinsTable.yml):CoinsTable}
     CoinsRedemptionQueue: ${file(resources/CoinsRedemptionQueue.yml):CoinsRedemptionQueue}
 functions:
   createUser:
@@ -60,6 +62,15 @@ functions:
           arn: ${self:custom.coinsRedemptionQueue.arn}
           batchSize: 10
           maximumRetryAttempts: 10
+  createBufferRecord:
+    handler: src/handlers/createBufferRecord.handler
+    events:
+      - http:
+          method: POST
+          path: /buffer
+  sendMail:
+    handler: src/handlers/sendMail.handler
+
 custom:
   coinsRedemptionQueue:
     arn: !GetAtt CoinsRedemptionQueue.Arn
