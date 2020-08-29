@@ -20,7 +20,7 @@ async function createBufferRecord(event, context) {
   try {
     await dynamodb
       .put({
-        TableName: "BufferCoinsTable",
+        TableName: "CoinsBufferTable",
         Item: record,
       })
       .promise();

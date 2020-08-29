@@ -1,0 +1,11 @@
+CoinsBufferTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: CoinsBufferTable
+    AttributeDefinitions:
+      - AttributeName: created_at
+        AttributeType: S
+    KeySchema:
+      - AttributeName: created_at
+        KeyType: HASH
+    BillingMode: PAY_PER_REQUEST

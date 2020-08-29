@@ -16,7 +16,7 @@ provider:
     - ${file(iam/SendMailIAM.yml):SendMailIAM}
 resources:
   Resources:
-    BufferCoinsTable: ${file(resources/BufferCoinsTable.yml):BufferCoinsTable}
+    CoinsBufferTable: ${file(resources/CoinsBufferTable.yml):CoinsBufferTable}
     UsersTable: ${file(resources/UsersTable.yml):UsersTable}
     CoinsTable: ${file(resources/CoinsTable.yml):CoinsTable}
     CoinsRedemptionQueue: ${file(resources/CoinsRedemptionQueue.yml):CoinsRedemptionQueue}

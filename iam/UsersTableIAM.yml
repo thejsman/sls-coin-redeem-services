@@ -11,6 +11,6 @@ UsersTableIAM:
 
   Resource:
     - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/UsersTable
-    - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/BufferCoinsTable
+    - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/CoinsBufferTable
     - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/CoinsTable
     - ${self:custom.coinsRedemptionQueue.arn}
