@@ -7,7 +7,7 @@ import { v4 as uuid } from "uuid";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const sendEmail = async (subject, body) => {
+export const sendEmail = async (subject, body) => {
   const message = {
     Body: {
       Text: {
