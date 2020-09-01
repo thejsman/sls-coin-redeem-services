@@ -1,32 +1,8 @@
-// import AWS from "aws-sdk";
-// // import commonMiddleware from "../lib/commonMiddleware";
-// // import createError from "http-errors";
-
-// const dynamodb = AWS.DynamoDB.DocumentClient();
-// async function processBufferItems(event, context) {
-//   let bufferRecords;
-//   const params = { TableName: "CoinsBufferTable" };
-//   try {
-//     const result = await dynamodb.scan(params).promise();
-//     bufferRecords = result.Items;
-//     console.log({ result });
-//   } catch (error) {
-//     console.log("Error encountered!");
-//     console.log(error);
-//     // throw new createError.InternalServerError(error);
-//   }
-//   //   return {
-//   //     statusCode: 200,
-//   //     body: JSON.stringify(users),
-//   //   };
-//   console.log({ bufferRecords });
-// }
-
 import AWS from "aws-sdk";
 import commonMiddleware from "../lib/commonMiddleware";
 import createError from "http-errors";
 import { updateUserCoins } from "./UpdateCoins";
-import { sendEmail } from "./processRedemptionQueue";
+// import { sendEmail } from "./processRedemptionQueue";
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 async function processBufferItems(event, context) {
@@ -48,7 +24,7 @@ async function processBufferItems(event, context) {
     throw new createError.InternalServerError(error);
   }
   bufferRecords.forEach(async (record) => {
-    const { user_id, coins_required, created_at, amount } = record;
+    const { user_id, coins_required, created_at } = record;
     try {
       await updateUserCoins(user_id, coins_required);
 
