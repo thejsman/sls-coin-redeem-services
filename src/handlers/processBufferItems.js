@@ -2,7 +2,10 @@ import AWS from "aws-sdk";
 import commonMiddleware from "../lib/commonMiddleware";
 import createError from "http-errors";
 import { updateUserCoins } from "./UpdateCoins";
-// import { sendEmail } from "./processRedemptionQueue";
+import axios from "axios";
+import { API_EndPoint } from "../lib/utils";
+import { sendEmailToAdmin } from "./sendMail";
+
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 async function processBufferItems(event, context) {
@@ -24,10 +27,17 @@ async function processBufferItems(event, context) {
     throw new createError.InternalServerError(error);
   }
   bufferRecords.forEach(async (record) => {
-    const { user_id, coins_required, created_at } = record;
+    const { user_id, coins_required, created_at, item_id } = record;
     try {
+      //Reverse the inventory
+      await axios.patch(`${API_EndPoint}/revertInventory`, {
+        item_id,
+        user_id,
+      });
+      //Reverse the user coins
       await updateUserCoins(user_id, coins_required);
 
+      //Delete the buffer record
       await dynamodb
         .delete({
           TableName: "CoinsBufferTable",
@@ -38,9 +48,9 @@ async function processBufferItems(event, context) {
         .promise();
     } catch (error) {
       console.log("Error: ", error);
-      //   const body = `Something went terribly wrong deleting buffer record : UserId: ${user_id}, CoinsRequired: ${coins_required}, CreatedAt: ${created_at}, Amount: ${amount}`;
-      //   const subject = `Error deleting buffer record`;
-      //   await sendEmail(subject, body);
+      const body = `Something went wrong deleting buffer record : UserId: ${user_id}, ItemId: ${item_id}, CreatedAt: ${created_at}`;
+      const subject = `Error deleting buffer record`;
+      await sendEmailToAdmin(subject, body);
     }
   });
   return {
