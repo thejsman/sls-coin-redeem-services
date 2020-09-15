@@ -7,7 +7,7 @@ import { sendEmailToAdmin } from "../handlers/sendMail";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-export const API_EndPoint = "https://dev.sagoon.com/Public";
+export const API_End_Point = "https://dev.sagoon.com/Public";
 
 // funciton to update inventory,
 export const processTransaction = async (item, user_id, amount) => {
@@ -44,10 +44,10 @@ export const processTransaction = async (item, user_id, amount) => {
 
       await dynamodb.put(params).promise();
 
-      if (user.total_coins >= parseFloat(item.coin)) {
+      if (user.total_coins >= parseInt(item.coin)) {
         // deduct coins from user table
         try {
-          await updateUserCoins(user_id, parseFloat(-item.coin));
+          await updateUserCoins(user_id, parseInt(-item.coin));
 
           // remove from buffer and add to persistant table
           await dynamodb

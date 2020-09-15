@@ -3,7 +3,7 @@ import commonMiddleware from "../lib/commonMiddleware";
 import createError from "http-errors";
 import { updateUserCoins } from "./UpdateCoins";
 import axios from "axios";
-import { API_EndPoint } from "../lib/utils";
+import { API_End_Point } from "../lib/utils";
 import { sendEmailToAdmin } from "./sendMail";
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
@@ -30,7 +30,7 @@ async function processBufferItems(event, context) {
     const { user_id, coins_required, created_at, item_id } = record;
     try {
       //Reverse the inventory
-      await axios.patch(`${API_EndPoint}/revertInventory`, {
+      await axios.patch(`${API_End_Point}/revertInventory`, {
         item_id,
         user_id,
       });

@@ -1,36 +1,36 @@
 import createError from "http-errors";
 import { sendEmailToAdmin } from "./sendMail";
 import axios from "axios";
-import { API_EndPoint, processTransaction } from "../lib/utils";
+import { API_End_Point, processTransaction } from "../lib/utils";
 
 async function processRedemptionQueue(event, context) {
   const record = event.Records[0];
   const { user_id, item_id, amount } = JSON.parse(record.body);
-  let item_info = {};
 
   try {
     // fetch item info via api
-    const item = await axios.get(`${API_EndPoint}/getItemsById/${item_id}`);
-    //Inventory response
-    item_info = {
-      ...item.data.item_info,
-    };
+    const item = await axios.get(`${API_End_Point}/getItemsById/${item_id}`);
 
-    if (item_info.inventory > 0) {
-      await processTransaction(item_info, user_id, amount);
+    const { status } = item.data;
+    //Inventory response
+    if (status) {
+      const { item_info } = item.data;
+
+      if (item_info.inventory > 0) {
+        await processTransaction(item_info, user_id, amount);
+      } else {
+        //No Inventory - send refund email
+        const body = `Hello Admin, Item Id: ${item_id} is no longer available please, initiate refund for UserId: ${user_id} Amount deducted :${amount}.`;
+        const subject = `Initiate Refund UserId: ${user_id}, ItemId: ${item_id}, Amount: ${amount}`;
+        await sendEmailToAdmin(subject, body);
+        throw new createError.Forbidden("No Inventory");
+      }
     } else {
-      //No Inventory - send refund email
-      const body = `Hello Admin, Item Id: ${item_id} is no longer available please, initiate refund for UserId: ${user_id} Amount deducted :${amount}.`;
-      const subject = `Initiate Refund UserId: ${user_id}, ItemId: ${item_id}, Amount: ${amount}`;
-      await sendEmailToAdmin(subject, body);
-      throw new createError.Forbidden("No Inventory");
+      console.log("Item does not exist");
+      throw new createError.NotFound("Item not found");
     }
   } catch (error) {
-    console.log(error);
-    const body = `Something went terribly wrong in fetching the Item inventory API for item id: ${item_id}, amount: ${amount}, user id: ${user_id}, please check.`;
-    const subject = `Error in fetching inventory API`;
-    await sendEmailToAdmin(subject, body);
-    throw new createError.Forbidden("Could not fetch the item info");
+    console.log("Error fetching api: ", error);
   }
 }
 

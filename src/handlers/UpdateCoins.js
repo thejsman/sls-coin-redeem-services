@@ -14,7 +14,7 @@ export const updateUserCoins = async (user_id, coins = 0) => {
   const user = await getUserById(user_id);
 
   if (user) {
-    const total_coins = user.total_coins + coins;
+    const total_coins = parseInt(user.total_coins) + parseInt(coins);
 
     // params for query
     const params = {
