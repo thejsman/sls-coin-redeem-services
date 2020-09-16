@@ -29,12 +29,15 @@ async function coinsRedeem(event, context) {
       .promise();
   }
 
-  const body = event.body;
-  console.log({ body });
+  const record = JSON.stringify({
+    success: 1,
+    message: "Record successfully placed on SQS",
+    user,
+  });
 
   return {
     statusCode: 200,
-    body: JSON.stringify(user),
+    body: record,
   };
 }
 

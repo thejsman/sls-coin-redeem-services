@@ -1,7 +1,6 @@
 import AWS from "aws-sdk";
 import commonMiddleware from "../lib/commonMiddleware";
 import createError from "http-errors";
-import { updateUserCoins } from "./UpdateCoins";
 import axios from "axios";
 import { API_End_Point } from "../lib/utils";
 import { sendEmailToAdmin } from "./sendMail";
@@ -27,15 +26,13 @@ async function processBufferItems(event, context) {
     throw new createError.InternalServerError(error);
   }
   bufferRecords.forEach(async (record) => {
-    const { user_id, coins_required, created_at, item_id } = record;
+    const { user_id, created_at, item_id } = record;
     try {
       //Reverse the inventory
-      await axios.patch(`${API_End_Point}/revertInventory`, {
+      const result = await axios.patch(`${API_End_Point}/revertInventory`, {
         item_id,
         user_id,
       });
-      //Reverse the user coins
-      await updateUserCoins(user_id, coins_required);
 
       //Delete the buffer record
       await dynamodb
@@ -46,6 +43,8 @@ async function processBufferItems(event, context) {
           },
         })
         .promise();
+
+      return result.data;
     } catch (error) {
       console.log("Error: ", error);
       const body = `Something went wrong deleting buffer record : UserId: ${user_id}, ItemId: ${item_id}, CreatedAt: ${created_at}`;
